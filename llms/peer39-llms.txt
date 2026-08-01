@@ -1,0 +1,16 @@
+# Peer39
+
+> Peer39 is a contextual advertising and intelligence company that provides pre-bid controls and post-buy analytics built on verified contextual data for programmatic media buyers. Its platform delivers contextual targeting, brand safety and suitability, and contextual analytics across web, mobile, and connected TV (CTV) and video environments, helping advertisers and platforms make privacy-forward, cookieless media decisions. As of this writing Peer39 exposes no public, self-serve developer API — access is via an authenticated customer application (app.peer39.com) and platform integrations.
+
+## Company
+- [Website](https://www.peer39.com): Peer39 corporate site and solutions overview.
+- [Blog](https://www.peer39.com/blog): Contextual advertising, brand safety, and CTV insights.
+- [Contact / Support](https://www.peer39.com/contact-us): Sales and support contact for platform access.
+- [Platform Login](https://app.peer39.com/login): Authenticated customer application.
+
+## Legal
+- [Service Terms](https://www.peer39.com/service-terms): Terms of service.
+- [Privacy Policy](https://www.peer39.com/privacy-policy/): Privacy policy.
+
+## Notes
+- No public API, developer portal, OpenAPI/AsyncAPI specification, SDKs, MCP server, or /.well-known/ discovery documents were found for Peer39 during enrichment. Access is via authenticated platform integrations rather than a documented self-serve developer surface.

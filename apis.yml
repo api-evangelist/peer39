@@ -1,7 +1,26 @@
 aid: peer39
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source: []
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/peer39.png
 name: Peer39
-description: Peer39 is a company surfaced as a portfolio company of canaan-partners and added to the API
-  Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: 'Peer39 is a contextual advertising and intelligence company that provides
+  pre-bid controls and post-buy analytics built on verified contextual data for programmatic
+  media buyers. Its platform delivers contextual targeting, brand safety and suitability,
+  and contextual analytics across web, mobile, and connected TV (CTV) and video environments,
+  helping advertisers and platforms make privacy-forward, cookieless media decisions.
+  Peer39 was surfaced as a portfolio company of Canaan Partners and added to the API
+  Evangelist network. As of this enrichment pass, Peer39 exposes no public API or
+  developer portal — access is via an authenticated customer application (app.peer39.com)
+  and platform integrations rather than a documented, self-serve developer surface.'
 url: https://raw.githubusercontent.com/api-evangelist/peer39/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -11,12 +30,41 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-20'
 tags:
 - Company
+- Contextual Advertising
+- AdTech
+- Brand Safety
+- Programmatic Advertising
+- Contextual Targeting
+- CTV
+- MarTech
 apis: []
+common:
+- type: DomainSecurity
+  url: security/peer39-domain-security.yml
+- type: LLMsTxt
+  url: llms/peer39-llms.txt
+- type: Website
+  url: https://www.peer39.com
+- type: Blog
+  url: https://www.peer39.com/blog
+- type: Login
+  url: https://app.peer39.com/login
+- type: Support
+  url: https://www.peer39.com/contact-us
+- type: TermsOfService
+  url: https://www.peer39.com/service-terms
+- type: PrivacyPolicy
+  url: https://www.peer39.com/privacy-policy/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+x-enrichment:
+  date: '2026-07-20'
+  status: minimal
+  artifacts_added: 2
+  pass: local-v1
