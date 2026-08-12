@@ -1,0 +1,144 @@
+generated: '2026-08-12'
+method: derived
+source: >-
+  https://github.com/awhite07/p39-custom-category-mcp — src/api/client.ts,
+  src/api/categories.ts, src/api/types.ts, src/validation/schemas.ts and README.md
+  (the first-party-authored Peer39 MCP server, "@peer39/mcp-server", v1.0.9) plus live
+  probes of https://app.peer39.com on 2026-08-12.
+api: Peer39 External API
+base_url: https://app.peer39.com
+path_prefix: /api/external
+
+auth:
+  style: session bearer token
+  header: 'Authorization: Bearer <sessionId>'
+  obtained_via: POST /api/external/login (username + password)
+  refresh: >-
+    Token carries expirationInSeconds. The reference client refreshes 60s early and, on a
+    mid-flight 401, re-logs-in and retries the original request exactly once.
+  detail: authentication/peer39-authentication.yml
+
+request_envelope:
+  style: single-key wrapper
+  description: >-
+    Write operations wrap their payload in a top-level `value` key —
+    `{"value": { ...fields... }}` — rather than posting the object at the root. The delete
+    endpoint wraps an ARRAY: `{"value": [{partnerCategoryId, buyerId}, ...]}`.
+  content_type: application/json
+  accept: application/json
+
+response_envelope:
+  shape:
+    value: object|array|null
+    code: integer
+    description: string|null
+    message: string
+  semantics: >-
+    `code: 0` means success. A NON-ZERO `code` is an error even on HTTP 200 — clients must
+    branch on the body, not the status line. One endpoint
+    (/api/external/prediction/urlexamples) is exempt and returns no code field.
+  detail: errors/peer39-problem-types.yml
+
+pagination:
+  style: offset + limit
+  params:
+    start: integer offset, >= 0
+    max: page size, 1–999
+    sort: property name to sort by
+    filterProperty: property name to filter on
+    filterValue: value to match
+    filterRange: range expression
+  response_fields:
+    value.result: array of category objects
+    value.total: total matching rows
+  hazard: >-
+    PUBLISHED QUIRK — the server-side defaults are `start=50` and `max=0`, which return
+    ZERO results. Callers must pass `start: 0` and an explicit `max` or the endpoint looks
+    empty. Recorded verbatim from the reference client's tool documentation.
+
+http_method_conventions:
+  - note: >-
+      Delete is a PUT, not a DELETE — `PUT /api/external/customcategories/delete` with a
+      body of `{"value": [...]}`. Documented explicitly in the reference client README.
+  - note: >-
+      Item mutation is a POST — `POST /api/external/customcategories/items` — while the
+      full-object update is a PUT on the collection path.
+
+destructive_defaults:
+  - operation: POST /api/external/customcategories/items
+    api_default: replace
+    hazard: >-
+      The `append` flag defaults to REPLACE server-side, silently discarding the existing
+      items list. The reference MCP server deliberately inverts this default to append so
+      an agent cannot destroy a list by omission. Any client written against this API
+      should do the same.
+
+custom_headers:
+  - name: system
+    required_on:
+      - POST /api/external/customcategories
+    description: account-scoped "system name"; omission returns error code 63
+
+idempotency:
+  supported: false
+  note: >-
+    No idempotency key, no Idempotency-Key header, and no request-deduplication semantics
+    are documented or present in the reference client. Creation is not safely retryable —
+    a retried POST /api/external/customcategories will create a second category.
+
+request_id_tracing:
+  supported: false
+  note: No request-id / correlation-id header is set or read by the reference client.
+
+versioning:
+  style: none
+  note: >-
+    The path prefix is /api/external with no version segment and no version header. There
+    is no published versioning or deprecation policy.
+  detail: lifecycle/peer39-lifecycle.yml
+
+rate_limit_signaling:
+  headers: none observed
+  note: >-
+    No X-RateLimit-* or RateLimit-* headers are read by the reference client and no limits
+    are published. See rate-limits/peer39-rate-limits.yml.
+
+field_expansion: not supported
+sparse_fieldsets: not supported
+metadata_fields: not supported
+
+validation_rules_published:
+  categoryName:
+    max_length: 120
+    pattern: '^[a-zA-Z0-9\s\-&_]+$'
+  items:
+    min: 1
+    item_max_length: 1024
+  expirationDate:
+    format: YYYY-MM-DD
+    window: today through one year from today
+  languageCodes:
+    wildcard: 'All'
+    urlexamples_wildcard: 'all'
+    hazard: >-
+      The wildcard is capitalized "All" on the category endpoints and lowercase "all" on
+      /prediction/urlexamples. Same API, two spellings.
+  categoryType:
+    2: keyword
+    3: URL
+    5: mobile app
+    6: CTV app
+    7: mobile-app keyword
+    8: CTV keyword
+  itemsTypes:
+    - REGULAR
+    - MUST_HAVE
+    - EXCLUDE
+
+cross_reference:
+  authentication: authentication/peer39-authentication.yml
+  errors: errors/peer39-problem-types.yml
+  lifecycle: lifecycle/peer39-lifecycle.yml
+  rate_limits: rate-limits/peer39-rate-limits.yml
+  data_model: data-model/peer39-data-model.yml
+  mcp: mcp/peer39-mcp.yml

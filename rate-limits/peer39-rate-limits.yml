@@ -1,0 +1,76 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  Review of every publicly readable Peer39 API surface — the reference MCP client source
+  at https://github.com/awhite07/p39-custom-category-mcp, the connector at
+  https://github.com/awhite07/peer39-mcp-connector, and www.peer39.com — plus live probes
+  of https://app.peer39.com/api/external/ on 2026-08-12.
+api: Peer39 External API
+
+limit_count: 0
+headers_published: false
+status_on_exhaustion: unknown
+
+detail: >-
+  Peer39 publishes no rate limits for the External API, and none can be observed: every
+  path under /api/external returns HTTP 401 unauthenticated, so no unauthenticated
+  response carries usable headers. The reference client — written against a real, working
+  Peer39 account — reads no X-RateLimit-*, RateLimit-* or Retry-After header, implements
+  no backoff, and retries only on 401 (re-login), never on 429. That is strong negative
+  evidence that the API emits no rate-limit signal an integrator could act on.
+
+limits: []
+
+evidence:
+  - url: https://app.peer39.com/api/external/customcategories
+    status: 401
+    note: unauthenticated GET; no rate-limit headers in the response.
+  - url: https://app.peer39.com/api/external/login
+    status: 401
+    note: POST with empty credentials; no rate-limit headers, no Retry-After.
+  - url: https://github.com/awhite07/p39-custom-category-mcp/blob/main/src/api/client.ts
+    status: 200
+    note: >-
+      The complete HTTP layer of Peer39's own reference client. It handles 401 and generic
+      !res.ok only — there is no 429 branch and no header inspection.
+
+documented_size_limits:
+  note: >-
+    Peer39 does publish payload/shape limits, which are not rate limits but are the only
+    published quantitative constraints on the API. Recorded here so an integrator finds
+    them.
+  limits:
+    - scope: per-request (list)
+      field: max
+      limit: 1–999
+      note: >-
+        Page size. Server-side default is max=0 with start=50, which returns zero rows —
+        callers must pass both explicitly. Out-of-range values return error code 50.
+    - scope: per-category
+      field: items
+      limit: 10000
+      unit: keywords or URLs
+      source: Peer39 published custom-category marketing material
+    - scope: per-item
+      field: items[]
+      limit: 1024
+      unit: characters
+    - scope: per-category
+      field: categoryName
+      limit: 120
+      unit: characters
+      note: exceeding returns error code 42
+    - scope: per-category
+      field: expirationDate
+      limit: 1
+      unit: year from today
+      note: outside the window returns error code 60 or 62
+
+off_host_note: >-
+  The Peer39 MCP Connector beta enforces 60 requests/minute per user with a burst of 10 on
+  its /mcp endpoint. That limit belongs to the connector on mcp-connector.scatter-brain.ai
+  — a non-Peer39 host — and says nothing about what app.peer39.com enforces.
+
+cross_reference:
+  conventions: conventions/peer39-conventions.yml
+  errors: errors/peer39-problem-types.yml

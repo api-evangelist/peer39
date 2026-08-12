@@ -1,0 +1,140 @@
+generated: '2026-08-12'
+method: derived
+source: >-
+  https://github.com/awhite07/p39-custom-category-mcp/blob/main/src/api/types.ts and
+  src/partners.ts — the TypeScript interfaces of the first-party-authored Peer39 MCP
+  server ("@peer39/mcp-server" v1.0.9). No OpenAPI is published; these are the request and
+  response shapes the reference client actually sends and parses.
+api: Peer39 External API
+
+note: >-
+  Derived from a hand-written client, not from a schema document. Field presence and
+  optionality reflect what the client declares; the server may accept or return more.
+
+entities:
+  - name: CustomCategory
+    description: >-
+      A contextual targeting or brand-safety list — keywords, URLs, mobile apps or CTV
+      apps — that Peer39 syncs to a connected DSP.
+    identifiers:
+      - field: partnerCategoryId
+        type: integer
+        note: the id used for updates and deletes
+      - field: accountCategoryId
+        type: integer
+        note: the id used for GET /api/external/customcategories/{accountCategoryId}
+    fields:
+      categoryName: string (1–120 chars, [a-zA-Z0-9 \-&_])
+      type: integer enum (2 keyword, 3 URL, 5 mobile app, 6 CTV app, 7 mobile-app keyword, 8 CTV keyword)
+      description: string
+      items: string[] (each 1–1024 chars)
+      itemsTypes: enum[] (REGULAR | MUST_HAVE | EXCLUDE), positionally aligned to items[]
+      languageCodes: string[] (ISO-639-1 subset, or "All")
+      safeFrom: boolean
+      emailAddress: string (recorded as "last updated by")
+      expirationDate: string (YYYY-MM-DD, today .. +1 year)
+      status: string
+      buyerId: integer
+      buyerName: string
+      partner: PartnerObject
+
+  - name: Buyer
+    description: >-
+      A buyer account. Not addressable as its own resource on the External API — it
+      appears only as a scoping id on category calls and is looked up by a human at
+      https://app.peer39.com/accounts.
+    identifiers:
+      - field: buyerId
+        type: integer
+    fields:
+      buyerName: string
+
+  - name: Partner
+    description: >-
+      A DSP the category is synced to. Peer39 assigns each a stable numeric id; the
+      reference client also ships a name→id map of 34 partner aliases.
+    identifiers:
+      - field: id
+        type: integer
+    fields:
+      name: string
+      dspData.advertiserId: string
+    known_ids:
+      730: mediamath
+      841: microsoft-advertising (alias xandr)
+      1341: nexxen
+      1352: perion
+      1385: illumin
+      1402: zeta-dsp
+      1407: the-trade-desk
+      1419: basis-technologies
+      1423: yahoo (alias verizon-media)
+      1438: adobe
+      1481: adform
+      1497: sky
+      1501: viant
+      1513: bidtellect
+      1516: deepintent
+      1524: index-exchange
+      1525: adtheorent
+      1527: sportradar
+      1528: reticle
+      1529: equativ
+      1530: blis
+      1532: amazon
+      1534: amazon-publisher-services
+      1536: genius-sports
+      1544: freewheel
+      1545: the-philadelphia-inquirer
+      1647: the-media-trust
+      1649: adobe-dsp
+    source_note: >-
+      The client comments this list as "Peer39 internal 'Symphony accounts' partner list";
+      test/sandbox/monitor accounts are omitted from it.
+
+  - name: UrlExamplePrediction
+    description: >-
+      A preview of which live URLs Peer39 would classify as matching a set of keyword
+      phrases. Read-only, meaningful only for web keyword categories (type 2).
+    fields:
+      urlExamples: string[]
+    request_fields:
+      languages: string[] (lowercase "all" wildcard here, unlike everywhere else)
+      partners: integer[]
+      items: '{phrase: string, type: REGULAR|MUST_HAVE|EXCLUDE}[]'
+
+relationships:
+  - from: CustomCategory
+    to: Buyer
+    kind: belongs_to
+    via: buyerId
+  - from: CustomCategory
+    to: Partner
+    kind: belongs_to
+    via: partner.id
+  - from: Buyer
+    to: CustomCategory
+    kind: has_many
+    via: buyerId
+  - from: Partner
+    to: CustomCategory
+    kind: has_many
+    via: partner.id
+  - from: CustomCategory
+    to: UrlExamplePrediction
+    kind: has_many
+    via: items[].phrase
+    note: >-
+      Not a stored relation — the prediction endpoint is a stateless preview over the same
+      phrase set a keyword category would hold.
+
+composite_key_note: >-
+  A category is addressed by the TRIPLE (accountCategoryId | partnerCategoryId, buyerId,
+  partnerId), not by a single global id. Getting the triple wrong is the single most common
+  failure on this API and surfaces as error code 6, 31 or 51.
+
+id_prefixes: none — all identifiers are bare integers, not prefixed strings.
+
+cross_reference:
+  errors: errors/peer39-problem-types.yml
+  conventions: conventions/peer39-conventions.yml

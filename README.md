@@ -42,6 +42,10 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Peer39 is a company surfaced as a portfolio company of canaan-partners and added to the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+Peer39 is a contextual advertising and intelligence company, surfaced as a portfolio company of canaan-partners and added to the API Evangelist network.
+
+Peer39 operates a real REST API — the **Peer39 External API** at `https://app.peer39.com/api/external` — for managing Custom Categories (contextual targeting and brand-safety lists) and syncing them to connected DSPs. It is credential-gated and publicly undocumented: no developer portal, no API reference page, no OpenAPI specification, and no SDK on any public package registry. Credentials are provisioned by a Peer39 account or integration manager who grants the "External API" and "RTB Buyer" roles.
+
+Everything in this repo about that API surface is derived from Peer39's own publicly readable MCP server source (`@peer39/mcp-server`, pre-release) plus live probes of the API host. Nothing was obtained with credentials.
 
 Backed by: canaan-partners

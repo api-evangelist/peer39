@@ -1,0 +1,148 @@
+generated: '2026-08-12'
+method: probed
+source: live HTTP probes of every Peer39 host on 2026-08-12
+result: no-hits
+
+summary: >-
+  Peer39 serves NO /.well-known/ discovery document on any host it controls. www.peer39.com
+  returns a real 404 for every path probed. app.peer39.com is a single-page application
+  whose catch-all answers HTTP 200 with the same 2,184-byte HTML shell for EVERY path,
+  including paths that plainly do not exist — those 200s are recorded below and treated as
+  MISSES, not hits, per the SPA-catch-all rule. No WellKnown or SecurityTxt pointer is
+  emitted.
+
+hosts:
+  - host: https://www.peer39.com
+    behavior: real 404s (HubSpot CMS)
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 404
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        file: null
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null
+      - path: /llms.txt
+        status: 404
+        file: null
+      - path: /openapi.json
+        status: 404
+        file: null
+      - path: /swagger.json
+        status: 404
+        file: null
+      - path: /api-docs
+        status: 404
+        file: null
+      - path: /robots.txt
+        status: 200
+        content_type: text/plain
+        file: null
+        note: >-
+          Real document. Allows all user agents, names the sitemap, and disallows only
+          HubSpot preview/preference paths. No AI-crawler directives.
+
+  - host: https://app.peer39.com
+    behavior: SPA catch-all — 200 + text/html for every path
+    verdict: all-misses
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        content_type: text/html
+        is_document: false
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 200
+        content_type: text/html
+        is_document: false
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        content_type: text/html
+        is_document: false
+        file: null
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        content_type: text/html
+        is_document: false
+        file: null
+      - path: /.well-known/api-catalog
+        status: 200
+        content_type: text/html
+        is_document: false
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 200
+        content_type: text/html
+        is_document: false
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 200
+        content_type: text/html
+        is_document: false
+        file: null
+      - path: /.well-known/agent.json
+        status: 200
+        content_type: text/html
+        is_document: false
+        file: null
+      - path: /llms.txt
+        status: 200
+        content_type: text/html
+        is_document: false
+        file: null
+      - path: /openapi.json
+        status: 200
+        content_type: text/html
+        is_document: false
+        file: null
+      - path: /swagger.json
+        status: 200
+        content_type: text/html
+        is_document: false
+        file: null
+      - path: /api-docs
+        status: 200
+        content_type: text/html
+        is_document: false
+        file: null
+
+  - host: https://api.peer39.net
+    behavior: DNS resolves (64.202.189.170) but no service answers
+    documents:
+      - path: /
+        status: 0
+        file: null
+        note: >-
+          Connection refused/filtered on 80, 443 and 8080. Legacy DNS record.
+          sandbox.peer39.com is a CNAME to sandbox.peer39.net, also dead.
+
+off_host_note: >-
+  A live OAuth 2.1 authorization server IS reachable at
+  https://mcp-connector.scatter-brain.ai/.well-known/oauth-authorization-server (HTTP 200)
+  and /.well-known/oauth-protected-resource (HTTP 200). That host belongs to the Peer39
+  MCP Connector beta and is NOT a Peer39-controlled domain, so it is recorded in
+  mcp/peer39-mcp.yml and deliberately not counted as a Peer39 well-known surface here.
+
+agent_card: >-
+  No A2A Agent Card found. Every /.well-known/agent-card.json and /.well-known/agent.json
+  probe either 404d (www) or returned the SPA HTML shell (app). No a2a/ artifact is
+  written — an agent card must be served by the provider and must never be authored on
+  its behalf.

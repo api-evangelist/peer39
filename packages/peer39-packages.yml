@@ -1,0 +1,119 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  Registry metadata queries against registry.npmjs.org, pypi.org, rubygems.org,
+  crates.io and the GitHub API on 2026-08-12, plus a review of every peer39-named
+  repository returned by GitHub code search.
+
+summary: >-
+  Peer39 publishes NO client SDK to any public package registry. The only publicly
+  installable first-party-authored artifact is the Peer39 MCP server, distributed
+  straight from a GitHub tag via npx — not from npm. It is an agent tool server, not a
+  language SDK, and it is not marked official because it lives on a personal account and
+  its own README calls it pre-release.
+
+packages:
+  - language: javascript
+    registry: github
+    name: '@peer39/mcp-server'
+    repository: https://github.com/awhite07/p39-custom-category-mcp
+    url: https://github.com/awhite07/p39-custom-category-mcp
+    install: 'npx -y github:awhite07/p39-custom-category-mcp#v1.0.9'
+    version: 1.0.9
+    published: '2026-07-14'
+    published_source: >-
+      git tag v1.0.9, committed 2026-07-14T18:02:02Z (GitHub API); package.json declares
+      version 1.0.9. There is no registry metadata endpoint because the distribution is a
+      GitHub tag, not a registry artifact.
+    license: UNLICENSED
+    official: false
+    official_note: >-
+      First-party-AUTHORED but not officially published. package.json names it
+      "@peer39/mcp-server", the README calls it "UNLICENSED — internal Peer39 project" and
+      says "Once we publish to npm under @peer39, the URL will change", and the repo
+      homepage is app.peer39.com — but it is hosted on a personal GitHub account
+      (awhite07), no github.com/peer39 organization exists, and Peer39 links to it from
+      nowhere on www.peer39.com. Not counted as an official SDK.
+    kind: mcp-server
+    note: >-
+      Wraps the Peer39 External API (https://app.peer39.com/api/external). Ten tools. The
+      install URL is pinned to an immutable tag, so a consumer can tell exactly what they
+      are getting.
+
+  - language: javascript
+    registry: github
+    name: '@peer39/mcp-connector'
+    repository: https://github.com/awhite07/peer39-mcp-connector
+    url: https://github.com/awhite07/peer39-mcp-connector
+    install: 'git clone; npm install (self-hosted service, not a library)'
+    version: 0.1.0
+    published: '2026-05-18'
+    published_source: >-
+      package.json version 0.1.0; last push 2026-05-18T19:20:37Z (GitHub API). No tags,
+      no releases, no registry entry.
+    license: UNLICENSED
+    official: false
+    kind: mcp-remote-server
+    note: >-
+      The remote/hosted sibling of the stdio server — an OAuth 2.1 authorization server
+      plus streamable-HTTP MCP transport. Deployed for beta testers at
+      https://mcp-connector.scatter-brain.ai, which is NOT a Peer39 domain.
+
+registries_checked:
+  - registry: npm
+    queries:
+      - name: '@peer39/mcp-server'
+        status: 404
+      - name: '@peer39/sdk'
+        status: 404
+      - name: peer39
+        status: 404
+      - name: p39-custom-category-mcp
+        status: 404
+      - name: 'search text=peer39'
+        status: 200
+        results: 0
+    version: null
+    note: The @peer39 npm scope is unclaimed as of 2026-08-12.
+  - registry: pypi
+    queries:
+      - name: peer39
+        status: 404
+    version: null
+  - registry: rubygems
+    queries:
+      - name: 'search query=peer39'
+        status: 200
+        results: 0
+    version: null
+  - registry: crates.io
+    version: null
+    note: not checked individually — no Rust surface is plausible for this API.
+  - registry: maven-central
+    version: null
+    note: no Java client referenced anywhere in Peer39 material.
+  - registry: nuget
+    version: null
+    note: no .NET client referenced anywhere in Peer39 material.
+  - registry: pkg.go.dev
+    version: null
+    note: no Go client referenced anywhere in Peer39 material.
+  - registry: packagist
+    version: null
+    note: no PHP client referenced anywhere in Peer39 material.
+
+third_party_clients:
+  - name: AnyEvent-Peer39
+    language: perl
+    registry: cpan
+    url: https://metacpan.org/dist/AnyEvent-Peer39
+    repository: https://github.com/saymedia/AnyEvent-Peer39
+    official: false
+    version: null
+    published: null
+    note: >-
+      Third-party (Say Media), last pushed 2013-02-13. Recorded only to note that it
+      exists and is more than a decade stale; not a Peer39 artifact and not counted.
+
+sdk_count: 0
+official_sdk_count: 0

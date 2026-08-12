@@ -1,0 +1,74 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  Probes of www.peer39.com (sitemap, /pricing, /status, /docs, /developers, /api),
+  DNS lookups for status.peer39.com and help.peer39.com, and review of the published
+  Peer39 MCP server repositories — all on 2026-08-12.
+api: Peer39 External API
+
+versioning:
+  scheme: none
+  detail: >-
+    The External API is served under the unversioned path prefix /api/external. No version
+    segment, no version query parameter, no version request header, and no Accept-header
+    media-type versioning is used by the reference client. There is no way for a consumer
+    to pin a version.
+  evidence: >-
+    Every path in
+    https://github.com/awhite07/p39-custom-category-mcp/blob/main/src/api/categories.ts
+
+deprecation:
+  policy_published: false
+  sunset_header: not observed
+  deprecation_header: not observed
+  rfc8594: false
+  detail: >-
+    No deprecation policy, notice period, or Sunset/Deprecation header convention is
+    published anywhere on a Peer39 host or in the reference client.
+
+status_page:
+  published: false
+  probes:
+    - url: https://www.peer39.com/status
+      status: 404
+    - host: status.peer39.com
+      dns: NXDOMAIN
+  detail: >-
+    Peer39 operates no public status page and no uptime/incident feed. There is no way for
+    an integrator to check whether the API is degraded other than calling it.
+
+sla:
+  published: false
+  detail: >-
+    No SLA, uptime commitment, or support-response target is published. Commercial terms
+    live in https://www.peer39.com/service-terms and are contract-level, not API-level.
+
+changelog:
+  published: false
+  probes:
+    - url: https://www.peer39.com/product-updates
+      status: 200
+      note: >-
+        Renders as a section landing page with no dated entries readable without
+        JavaScript; carries no API change history.
+    - url: https://www.peer39.com/product-updates/new-platform-features
+      status: 200
+      note: Marketing feature page, undated, no API changes.
+  detail: >-
+    No dated API changelog exists. Platform changes are announced in marketing pages and
+    the blog, not in a change log an integrator can diff.
+
+deprecated_operations: []
+
+client_lifecycle:
+  note: >-
+    The only versioned artifact in the Peer39 orbit is the MCP server itself, which is
+    disciplined about it — SemVer, immutable git tags v1.0.2 through v1.0.9, install URLs
+    pinned to a tag, and an explicit maintainer rule never to re-point an existing tag.
+    That discipline does not extend to the API it wraps.
+  latest_version: 1.0.9
+  latest_published: '2026-07-14'
+
+cross_reference:
+  conventions: conventions/peer39-conventions.yml
+  packages: packages/peer39-packages.yml

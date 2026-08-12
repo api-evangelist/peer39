@@ -1,16 +1,53 @@
 # Peer39
 
-> Peer39 is a contextual advertising and intelligence company that provides pre-bid controls and post-buy analytics built on verified contextual data for programmatic media buyers. Its platform delivers contextual targeting, brand safety and suitability, and contextual analytics across web, mobile, and connected TV (CTV) and video environments, helping advertisers and platforms make privacy-forward, cookieless media decisions. As of this writing Peer39 exposes no public, self-serve developer API — access is via an authenticated customer application (app.peer39.com) and platform integrations.
+> Peer39 is a contextual advertising and intelligence company providing pre-bid controls and post-buy analytics built on verified contextual data for programmatic media buyers — contextual targeting, brand safety and suitability, and contextual analytics across web, mobile, CTV and video. Peer39 operates a real REST API, the **Peer39 External API** at `https://app.peer39.com/api/external`, for managing Custom Categories (contextual targeting and brand-safety lists) and syncing them to connected DSPs. It is credential-gated and undocumented in public: there is no developer portal, no API reference page, and no OpenAPI specification. Credentials are provisioned by a Peer39 account or integration manager who grants the "External API" and "RTB Buyer" roles.
+
+## API surface
+
+- Base URL: `https://app.peer39.com`, path prefix `/api/external`
+- Auth: POST `/api/external/login` with username + password returns a `sessionId`, carried as `Authorization: Bearer <sessionId>`. Not OAuth. Not an API key.
+- Errors: HTTP 200 with a `{value, code, description, message}` envelope; a **non-zero `code` is an error even on a 200**. Twenty error codes are known.
+- No versioning, no idempotency, no rate-limit headers, no status page, no changelog, no webhooks.
+- Every path under `/api/external` returns 401 unauthenticated, including paths that do not exist.
+
+Operations known to exist (from Peer39's own reference client — Peer39 publishes no OpenAPI):
+
+- `POST /api/external/login` — mint a session
+- `GET /api/external/customcategories` — list categories (offset paging: `start`, `max` 1-999; server defaults return zero rows, always pass both)
+- `GET /api/external/customcategories/{accountCategoryId}` — fetch one category
+- `POST /api/external/customcategories` — create a category (requires the `system` header)
+- `PUT /api/external/customcategories` — full update
+- `PUT /api/external/customcategories/updateBasicDetails` — metadata-only update
+- `POST /api/external/customcategories/items` — modify items (**API default is REPLACE, not append**)
+- `PUT /api/external/customcategories/delete` — delete (a PUT, not a DELETE)
+- `POST /api/external/prediction/urlexamples` — preview URLs matching a keyword set
+
+## Agent surface
+
+- An MCP server for the Peer39 External API exists in **pre-release**: `@peer39/mcp-server`, ten tools, installed via `npx -y github:awhite07/p39-custom-category-mcp#v1.0.9`. A remote OAuth 2.1 connector variant is live at `https://mcp-connector.scatter-brain.ai/mcp` (nine tools).
+- Both are first-party-authored ("internal Peer39 project") but published on a personal GitHub account, not on npm, and not hosted on a peer39.com domain. Treat as beta.
+- No A2A Agent Card, no `llms.txt`, no `/.well-known/` documents are served on any Peer39 host.
 
 ## Company
 - [Website](https://www.peer39.com): Peer39 corporate site and solutions overview.
+- [Platform](https://www.peer39.com/platform/): Contextual targeting and CTV platform overview.
+- [Product](https://www.peer39.com/product): Advanced contextual data for advertisers.
+- [Publisher Solutions](https://www.peer39.com/publisher-solutions): Contextual data for publishers.
+- [Programmatic Partners](https://www.peer39.com/programmatic-partners): The DSPs and SSPs Peer39 syncs to.
+- [Onboarding Guide](https://www.peer39.com/onboarding-guide): Getting started with the platform.
 - [Blog](https://www.peer39.com/blog): Contextual advertising, brand safety, and CTV insights.
+- [Newsroom](https://www.peer39.com/newsroom): Company announcements.
 - [Contact / Support](https://www.peer39.com/contact-us): Sales and support contact for platform access.
+- [Sign Up](https://www.peer39.com/signup/): Marketing signup — does not yield API credentials.
 - [Platform Login](https://app.peer39.com/login): Authenticated customer application.
+- [Crawler Notice](https://www.peer39.com/crawler-notice): Peer39 operates `peer39_crawler/1.0` and honors robots.txt.
 
 ## Legal
-- [Service Terms](https://www.peer39.com/service-terms): Terms of service.
-- [Privacy Policy](https://www.peer39.com/privacy-policy/): Privacy policy.
+- [Service Terms](https://www.peer39.com/service-terms)
+- [Privacy Policy](https://www.peer39.com/privacy-policy/)
+- [Cookie Notice](https://www.peer39.com/cookie-notice)
 
 ## Notes
-- No public API, developer portal, OpenAPI/AsyncAPI specification, SDKs, MCP server, or /.well-known/ discovery documents were found for Peer39 during enrichment. Access is via authenticated platform integrations rather than a documented self-serve developer surface.
+- No public pricing. Enterprise / contact-sales only; `/pricing` returns 404.
+- No OpenAPI, AsyncAPI, GraphQL schema, JSON Schema, Postman collection, or published SDK on any registry (npm, PyPI, RubyGems all miss).
+- API documentation is distributed as PDFs by account managers rather than published on the web — the reference client cites "Peer39 PDF" as the source of its language-code rules.

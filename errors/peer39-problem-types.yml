@@ -1,0 +1,122 @@
+generated: '2026-08-12'
+method: derived
+source: >-
+  https://github.com/awhite07/p39-custom-category-mcp/blob/main/src/api/errors.ts
+  (PEER39_ERROR_CODES) plus the troubleshooting table in that repo's README — the
+  first-party-authored Peer39 MCP server ("UNLICENSED — internal Peer39 project").
+api: Peer39 External API
+format: proprietary-code-envelope
+rfc9457: false
+
+envelope:
+  description: >-
+    The Peer39 External API returns HTTP 200 with an application-level result envelope on
+    most failures. Callers MUST inspect `code` — a non-zero `code` is an error even when
+    the HTTP status is 200. Transport-level failures (bad/expired session) surface as a
+    real HTTP 401.
+  shape:
+    value: object|array|null      # the payload, null on error
+    code: integer                 # 0 = success, non-zero = error
+    message: string               # server-supplied message
+    description: string|null
+  exceptions:
+    - path: /api/external/prediction/urlexamples
+      note: >-
+        Does not return the {code, message} envelope; the reference client disables
+        error-code checking for this endpoint (`expectErrorCode: false`).
+
+http_statuses:
+  - status: 401
+    meaning: >-
+      Session token missing, expired, or the account lacks the "External API" role.
+      Observed live on 2026-08-12 for unauthenticated GET /api/external/customcategories
+      and POST /api/external/login with empty credentials. Every path under
+      /api/external/ answers 401 when unauthenticated, including paths that do not
+      exist — so a 401 is not evidence that a given path is real.
+    remediation: >-
+      Re-run POST /api/external/login for a fresh sessionId; the reference client retries
+      the original request exactly once after re-login. A second 401 means the credential
+      or role is wrong, not the session.
+
+problem_types:
+  - code: 0
+    title: Success
+    remediation: n/a — this is the success sentinel, not an error.
+  - code: 1
+    title: Failed to delete or create custom category
+    remediation: Generic server-side failure; retry, then escalate to the Peer39 integration manager.
+  - code: 6
+    title: Account ID not found
+    remediation: >-
+      The category's accountCategoryId does not belong to this buyer + partner pair.
+      Verify buyerId and partnerId at https://app.peer39.com/accounts.
+  - code: 10
+    title: Invalid category name (contains illegal characters)
+    remediation: >-
+      categoryName accepts alphanumerics, whitespace and the characters "-", "&", "_" only.
+  - code: 13
+    title: URL is empty — a valid URL is required to create a custom URL category
+    remediation: Supply at least one non-empty URL in items[] for a type 3 (URL) category.
+  - code: 16
+    title: Category is inactive
+    remediation: Reactivate the category in app.peer39.com before mutating it.
+  - code: 29
+    title: Keywords list is null or empty
+    remediation: items[] must contain at least one entry.
+  - code: 31
+    title: Invalid Account ID
+    remediation: Same as code 6 — the account/category/buyer/partner combination does not resolve.
+  - code: 34
+    title: Invalid safeFrom value
+    remediation: safeFrom must be a boolean.
+  - code: 38
+    title: Invalid language code
+    remediation: >-
+      Use a code from the published set (All, sq, ar, bg, zh, hr, cs, da, nl, en, et, fi,
+      fr, de, el, he, hi, hu, ga, it, ja, ko, lv, lt, ms, no, nb, nn, fa, pl, pt, ro, ru,
+      sr, sk, sl, es, sv, ta, th, tr, vi). "All" is the wildcard for the category
+      endpoints; the urlexamples endpoint uses lowercase "all" instead.
+  - code: 42
+    title: Category name is too long (max 120 chars)
+    remediation: Truncate categoryName to 120 characters or fewer.
+  - code: 44
+    title: Invalid keywords
+    remediation: Each item is 1–1024 characters; check for empty or over-long entries.
+  - code: 47
+    title: Invalid type
+    remediation: >-
+      The category type is not supported for this operation. Valid types are
+      2 (keyword), 3 (URL), 5 (mobile app), 6 (CTV app), 7 (mobile-app keyword),
+      8 (CTV keyword).
+  - code: 49
+    title: Invalid URLs
+    remediation: Check URL syntax in items[] for a type 3 category.
+  - code: 50
+    title: >-
+      Max field exceeded the maximum system limit (or below minimum, or invalid sort)
+    remediation: >-
+      max must be 1–999 on list calls; sort must be a recognized property name.
+  - code: 51
+    title: Invalid Buyer ID
+    remediation: Re-check the numeric buyer id at https://app.peer39.com/accounts.
+  - code: 58
+    title: Invalid email address
+    remediation: emailAddress must be a syntactically valid address.
+  - code: 60
+    title: Invalid expiration date
+    remediation: expirationDate is YYYY-MM-DD and must fall between today and one year from today.
+  - code: 62
+    title: Invalid expiration date
+    remediation: >-
+      Second expiration-date code returned by the API; same remediation as code 60.
+      Peer39 publishes both without distinguishing them.
+  - code: 63
+    title: Invalid system parameter — the `system` header is wrong or missing
+    remediation: >-
+      Set the `system` request header to the account's auto-generated system name, found
+      on the account page in app.peer39.com. Required on category creation.
+
+coverage_note: >-
+  This is the complete error-code table the Peer39 MCP server ships, not a sample. Peer39
+  does not publish an error reference on a public web page — the codes are only readable
+  because they were transcribed into a public client. Codes outside this table may exist.

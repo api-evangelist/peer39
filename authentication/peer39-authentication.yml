@@ -1,0 +1,116 @@
+generated: '2026-08-12'
+method: derived
+source: >-
+  https://github.com/awhite07/p39-custom-category-mcp/blob/main/src/auth/client.ts
+  and src/api/client.ts — the first-party-authored Peer39 MCP server ("UNLICENSED —
+  internal Peer39 project", package name "@peer39/mcp-server"), corroborated by a live
+  unauthenticated probe of https://app.peer39.com/api/external/login (HTTP 401).
+api: Peer39 External API
+base_url: https://app.peer39.com
+
+note: >-
+  Peer39 publishes no public API reference page. This profile is derived from the
+  publicly readable source of Peer39's own MCP server client plus live probes of the
+  API host. Every value below is read from that client or observed on the wire — none
+  is inferred. Peer39 distributes its API documentation as PDFs handed out by account
+  managers (the MCP source cites "Peer39 PDF" as the source of its language-code and
+  wildcard rules), so there is no machine-readable securityScheme document to derive from.
+
+schemes:
+  - id: peer39-session
+    type: http
+    scheme: bearer
+    in: header
+    header: Authorization
+    format: 'Bearer <sessionId>'
+    description: >-
+      Session-token bearer auth. Every call under /api/external/ carries
+      `Authorization: Bearer <sessionId>`, where the sessionId is minted by the login
+      endpoint below. This is NOT OAuth 2.0 and NOT a long-lived API key — it is a
+      short-lived server-issued session id obtained from username + password.
+    token_endpoint:
+      method: POST
+      path: /api/external/login
+      url: https://app.peer39.com/api/external/login
+      request_body:
+        username: string
+        password: string
+      response_shape:
+        result.sessionId: string
+        expirationInSeconds: integer
+      probe:
+        fetched: '2026-08-12'
+        url: https://app.peer39.com/api/external/login
+        http_status: 401
+        note: >-
+          POSTed with empty credentials; the endpoint exists and rejects with 401 rather
+          than 404, consistent with the documented "401 Peer39 login failed" behavior.
+    expiry:
+      source: expirationInSeconds field on the login response
+      client_behavior: >-
+        The reference client caches the sessionId and refreshes it 60s before expiry;
+        on a 401 mid-flight it invalidates the cache, re-logs-in once, and retries the
+        original request exactly once.
+
+  - id: peer39-system-header
+    type: apiKey
+    in: header
+    header: system
+    description: >-
+      A per-account "system name" string that must accompany category-creation calls
+      (POST /api/external/customcategories). It is an account-scoped identifier, not a
+      secret credential, and is surfaced to customers on their account page in
+      app.peer39.com. Omitting or mis-setting it returns Peer39 error code 63
+      ("Invalid system parameter").
+    required_for:
+      - POST /api/external/customcategories
+
+authorization:
+  model: role-based, provisioned by Peer39 — not self-service
+  required_roles:
+    - name: External API
+      note: >-
+        The login account must carry this role or login returns 401. The MCP server's
+        troubleshooting table instructs the user to "ask your Peer39 integration manager
+        to add it", confirming roles are granted by Peer39 staff rather than self-served.
+    - name: RTB Buyer
+  scoping:
+    - field: buyerId
+      note: numeric buyer account id; calls are scoped to buyer accounts the credential owns
+    - field: partnerId
+      note: >-
+        numeric DSP partner id (e.g. 841 = Microsoft Advertising / Xandr,
+        1407 = The Trade Desk); a category belongs to a buyer + partner pair
+  errors_on_scope_mismatch:
+    - code: 6
+      message: Account ID not found
+    - code: 31
+      message: Invalid Account ID
+    - code: 51
+      message: Invalid Buyer ID
+
+signup:
+  self_service: false
+  how: >-
+    Credentials are issued through a Peer39 account/integration manager. There is no
+    developer portal, no API key self-service page, and no public signup that yields
+    API credentials. https://www.peer39.com/signup/ is a marketing signup, not a
+    developer credential flow.
+
+oauth2: false
+openid_connect: false
+mutual_tls: false
+api_key: false
+
+related_oauth_note: >-
+  An OAuth 2.1 authorization server DOES exist in the Peer39 MCP orbit — the remote
+  "Peer39 MCP Connector" beta at https://mcp-connector.scatter-brain.ai serves RFC 8414
+  and RFC 9728 metadata and supports PKCE S256 + RFC 7591 dynamic client registration.
+  It is NOT hosted on a Peer39-controlled domain and it does not authenticate the Peer39
+  API itself — it stores the user's Peer39 username/password encrypted and exchanges them
+  for a session id behind the scenes. It is recorded in mcp/peer39-mcp.yml, not here.
+
+cross_reference:
+  errors: errors/peer39-problem-types.yml
+  conventions: conventions/peer39-conventions.yml
+  mcp: mcp/peer39-mcp.yml

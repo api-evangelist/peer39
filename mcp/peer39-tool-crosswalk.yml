@@ -1,0 +1,129 @@
+generated: '2026-08-12'
+method: derived
+source: >-
+  Bound from https://github.com/awhite07/p39-custom-category-mcp/blob/main/src/tools/*.ts
+  (tool definitions) to src/api/categories.ts (the exact REST method + path each tool
+  calls). Both files are in the first-party-authored Peer39 MCP server, v1.0.9.
+api: Peer39 External API
+
+note: >-
+  Peer39 publishes no OpenAPI, so the `rest:` column names METHOD + PATH rather than
+  operationId. The binding is nonetheless exact: each MCP tool handler calls exactly one
+  named function in src/api/categories.ts, and that function hard-codes its method and
+  path. Confidence is high where the tool wraps a single call and the mapping is read
+  straight from source; medium where the tool is local-only or transforms the payload.
+
+surfaces:
+  openapi:
+    published: false
+    note: >-
+      No OpenAPI, Swagger, GraphQL or AsyncAPI document is published on any Peer39 host.
+      Probed 2026-08-12 across www.peer39.com and app.peer39.com — see
+      well-known/peer39-well-known.yml.
+  rest:
+    base_url: https://app.peer39.com
+    path_prefix: /api/external
+    gated: true
+    note: >-
+      Every path under /api/external returns HTTP 401 unauthenticated, including paths
+      that do not exist, so operations cannot be enumerated by probing.
+  mcp:
+    stdio: 'npx -y github:awhite07/p39-custom-category-mcp#v1.0.9'
+    remote: https://mcp-connector.scatter-brain.ai/mcp
+    gated: true
+    note: >-
+      Live tools/list returned 401. Tool names, descriptions and input schemas below are
+      read from the published zod schemas in source, not from wire introspection.
+
+crosswalk:
+  - tool: peer39_get_category
+    category: category-read
+    rest:
+      - 'GET /api/external/customcategories/{accountCategoryId}?partner={partnerId}&buyer={buyerId}'
+    binding: one-to-one
+    confidence: high
+  - tool: peer39_list_categories
+    category: category-read
+    rest:
+      - 'GET /api/external/customcategories'
+    binding: one-to-one
+    confidence: high
+    note: >-
+      Tool forwards buyer[], partner[], max, start, sort, filterProperty, filterValue and
+      filterRange unchanged. It supplies saved defaults for buyer and partner when omitted.
+  - tool: peer39_create_category
+    category: category-write
+    rest:
+      - 'POST /api/external/customcategories'
+    binding: one-to-one
+    confidence: high
+    note: >-
+      Adds the required `system` request header from saved config; wraps the payload in
+      the {"value": {...}} envelope.
+  - tool: peer39_update_category_details
+    category: category-write
+    rest:
+      - 'PUT /api/external/customcategories/updateBasicDetails'
+    binding: one-to-one
+    confidence: high
+  - tool: peer39_update_category_items
+    category: category-write
+    rest:
+      - 'POST /api/external/customcategories/items'
+    binding: one-to-one
+    confidence: high
+    note: >-
+      SEMANTIC DIVERGENCE — the tool inverts the API default. The REST endpoint defaults
+      `append` to false (destructive replace); the tool defaults it to true (append).
+      An agent calling REST directly gets different behavior than the same agent calling
+      the tool.
+  - tool: peer39_update_category
+    category: category-write
+    rest:
+      - 'PUT /api/external/customcategories'
+    binding: one-to-one
+    confidence: high
+  - tool: peer39_delete_category
+    category: category-write
+    rest:
+      - 'PUT /api/external/customcategories/delete'
+    binding: one-to-one
+    confidence: high
+    note: Delete is a PUT with a body, not an HTTP DELETE.
+  - tool: peer39_get_url_examples
+    category: prediction
+    rest:
+      - 'POST /api/external/prediction/urlexamples'
+    binding: one-to-one
+    confidence: high
+    note: >-
+      The only endpoint that does NOT return the {code, message} envelope; the client
+      disables error-code checking for it. Also the only one whose language wildcard is
+      lowercase "all".
+
+mcp_only:
+  - tool: peer39_configure
+    reason: >-
+      Local client-side state. Writes ~/.peer39-mcp/config.json; makes no HTTP call to
+      Peer39. Absent from the remote connector, which uses a /setup web form instead.
+  - tool: peer39_check_setup
+    reason: >-
+      Local introspection of saved configuration. Makes no HTTP call to Peer39.
+
+rest_only:
+  - rest: 'POST /api/external/login'
+    reason: >-
+      Session minting. Called implicitly by every tool through the shared auth client, but
+      exposed as no tool — by design, since it consumes the raw password.
+
+coverage:
+  mcp_tools: 10
+  mcp_tools_backed_by_rest: 8
+  mcp_only_tools: 2
+  rest_operations_known: 9
+  rest_operations_with_a_tool: 8
+  rest_operations_without_a_tool: 1
+  note: >-
+    "rest_operations_known" is the set of operations the reference client implements, not
+    a claim about the full Peer39 External API. There may be operations no public client
+    touches.
