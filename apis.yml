@@ -25,22 +25,20 @@ accessModel:
   method: searched
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/peer39.png
 name: Peer39
-description: 'Peer39 is a contextual advertising and intelligence company that provides
-  pre-bid controls and post-buy analytics built on verified contextual data for programmatic
-  media buyers. Its platform delivers contextual targeting, brand safety and suitability,
-  and contextual analytics across web, mobile, and connected TV (CTV) and video environments,
-  helping advertisers and platforms make privacy-forward, cookieless media decisions.
-  Peer39 was surfaced as a portfolio company of Canaan Partners and added to the API
-  Evangelist network. Peer39 does operate a real REST API — the Peer39 External API at
-  https://app.peer39.com/api/external — for creating, updating and deleting Custom Categories
-  (contextual targeting and brand-safety lists of keywords, URLs, mobile apps and CTV apps)
-  and syncing them to connected DSPs such as The Trade Desk, Microsoft Advertising/Xandr,
-  Basis, Yahoo and Amazon. That API is entirely undocumented in public: there is no developer
-  portal, no API reference page, no OpenAPI specification and no published SDK. Credentials
-  are provisioned by a Peer39 account or integration manager who grants the "External API"
-  and "RTB Buyer" roles on a named account, and API documentation is distributed as PDFs
-  rather than published on the web. A first-party-authored MCP server for the API exists in
-  pre-release on a personal GitHub account and is the only public description of the surface.'
+description: 'Peer39 is a contextual advertising and intelligence company that provides pre-bid controls
+  and post-buy analytics built on verified contextual data for programmatic media buyers. Its platform
+  delivers contextual targeting, brand safety and suitability, and contextual analytics across web, mobile,
+  and connected TV (CTV) and video environments, helping advertisers and platforms make privacy-forward,
+  cookieless media decisions. Peer39 was surfaced as a portfolio company of Canaan Partners and added
+  to the API Evangelist network. Peer39 does operate a real REST API — the Peer39 External API at https://app.peer39.com/api/external
+  — for creating, updating and deleting Custom Categories (contextual targeting and brand-safety lists
+  of keywords, URLs, mobile apps and CTV apps) and syncing them to connected DSPs such as The Trade Desk,
+  Microsoft Advertising/Xandr, Basis, Yahoo and Amazon. That API is entirely undocumented in public: there
+  is no developer portal, no API reference page, no OpenAPI specification and no published SDK. Credentials
+  are provisioned by a Peer39 account or integration manager who grants the "External API" and "RTB Buyer"
+  roles on a named account, and API documentation is distributed as PDFs rather than published on the
+  web. A first-party-authored MCP server for the API exists in pre-release on a personal GitHub account
+  and is the only public description of the surface.'
 url: https://raw.githubusercontent.com/api-evangelist/peer39/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -64,19 +62,17 @@ tags:
 - Custom Categories
 - DSP
 apis:
-- aid: peer39-external-api
+- aid: peer39:peer39-external-api
   name: Peer39 External API
-  description: 'The Peer39 External API manages Custom Categories — contextual targeting
-    and brand-safety lists of keywords, URLs, mobile apps or CTV apps — and syncs them to
-    a connected DSP partner. Nine operations are known: session login, list/get/create/
-    full-update/metadata-update/items-update/delete of custom categories, and a URL-example
-    prediction preview. Authentication is a session bearer token obtained by POSTing a
-    username and password to /api/external/login; the account must carry the "External API"
-    and "RTB Buyer" roles, which are granted by a Peer39 integration manager. The API is
-    credential-gated and publicly undocumented — Peer39 publishes no API reference page and
-    no OpenAPI. This profile is derived from Peer39''s own publicly readable MCP server
-    source plus live probes of the API host, and every path under /api/external returns
-    HTTP 401 unauthenticated.'
+  description: 'The Peer39 External API manages Custom Categories — contextual targeting and brand-safety
+    lists of keywords, URLs, mobile apps or CTV apps — and syncs them to a connected DSP partner. Nine
+    operations are known: session login, list/get/create/ full-update/metadata-update/items-update/delete
+    of custom categories, and a URL-example prediction preview. Authentication is a session bearer token
+    obtained by POSTing a username and password to /api/external/login; the account must carry the "External
+    API" and "RTB Buyer" roles, which are granted by a Peer39 integration manager. The API is credential-gated
+    and publicly undocumented — Peer39 publishes no API reference page and no OpenAPI. This profile is
+    derived from Peer39''s own publicly readable MCP server source plus live probes of the API host, and
+    every path under /api/external returns HTTP 401 unauthenticated.'
   humanURL: https://app.peer39.com
   baseURL: https://app.peer39.com
   tags:
