@@ -48,7 +48,7 @@ x-tier: profiled
 x-tier-reason: enrichment-pipeline
 specificationVersion: '0.23'
 created: '2026-07-17'
-modified: '2026-08-12'
+modified: '2026-10-06'
 tags:
 - Company
 - Contextual Advertising
@@ -101,6 +101,8 @@ apis:
   - type: Login
     url: https://app.peer39.com/login
 common:
+- url: https://www.peer39.com/blog/rss.xml
+  type: BlogRSS
 - type: DomainSecurity
   url: security/peer39-domain-security.yml
 - type: LLMsTxt
