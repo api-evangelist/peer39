@@ -101,6 +101,8 @@ apis:
   - type: Login
     url: https://app.peer39.com/login
 common:
+- type: RateLimits
+  url: rate-limits/peer39-rate-limits.yml
 - url: https://www.peer39.com/blog/rss.xml
   type: BlogRSS
 - type: DomainSecurity
