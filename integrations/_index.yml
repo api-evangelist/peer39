@@ -27,3 +27,36 @@
     detected: '2026-10-14'
   status: not-a-workflow
   arazzo: null
+- slug: peer39-amazon-ads-partner-directory-technology
+  label: Amazon Ads (partner directory, technology)
+  partner: amazon
+  partner_name: Amazon Ads (partner directory, technology)
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://advertising.amazon.com/partners/directory
+  source: edge
+  relationship: platform-app
+  contract_reference:
+    register: Amazon Ads Partner Directory (advertising.amazon.com/partners/directory, GetPartners)
+    registered_name: Peer39
+    register_id: amzn1.ads1.ma1.27iishuecsqgi0ro7khcf7xrc
+    matched_domain: peer39.com
+    matched_by: domain
+    services:
+    - ADVERTISING_EFFECTIVENESS
+    - BRAND_SAFETY
+    - CLEAN_ROOM_INTEGRATION
+    - DATA_INTEGRATION
+    ads_products:
+    - AMAZON_DSP
+    - VIDEO_ADS
+    service_models:
+    - SELF_SERVICE
+    - SERVICE
+    signal_note: listing = participation; accreditation recorded as partner_tier; ads_certifications are Amazon
+      Ads LEARNING certifications held by staff, not product conformance, never certified_products
+    detected_by: sweep-amazon-sp-api-appstore.py
+    detected: '2026-10-21'
+  status: not-a-workflow
+  arazzo: null
