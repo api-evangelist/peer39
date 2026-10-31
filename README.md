@@ -64,10 +64,108 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Peer39 is a contextual advertising and intelligence company, surfaced as a portfolio company of canaan-partners and added to the API Evangelist network.
+Peer39 is a contextual advertising and intelligence company that provides pre-bid controls and post-buy analytics built on verified contextual data for programmatic media buyers. Its platform delivers contextual targeting, brand safety and suitability, and contextual analytics across web, mobile, and connected TV (CTV) and video environments, helping advertisers and platforms make privacy-forward, cookieless media decisions. Peer39 was surfaced as a portfolio company of Canaan Partners and added to the API Evangelist network. Peer39 does operate a real REST API — the Peer39 External API at https://app.peer39.com/api/external — for creating, updating and deleting Custom Categories (contextual targeting and brand-safety lists of keywords, URLs, mobile apps and CTV apps) and syncing them to connected DSPs such as The Trade Desk, Microsoft Advertising/Xandr, Basis, Yahoo and Amazon. That API is entirely undocumented in public: there is no developer portal, no API reference page, no OpenAPI specification and no published SDK. Credentials are provisioned by a Peer39 account or integration manager who grants the "External API" and "RTB Buyer" roles on a named account, and API documentation is distributed as PDFs rather than published on the web. A first-party-authored MCP server for the API exists in pre-release on a personal GitHub account and is the only public description of the surface.
 
-Peer39 operates a real REST API — the **Peer39 External API** at `https://app.peer39.com/api/external` — for managing Custom Categories (contextual targeting and brand-safety lists) and syncing them to connected DSPs. It is credential-gated and publicly undocumented: no developer portal, no API reference page, no OpenAPI specification, and no SDK on any public package registry. Credentials are provisioned by a Peer39 account or integration manager who grants the "External API" and "RTB Buyer" roles.
+**Areas:** Company · Contextual Advertising · AdTech · Brand Safety · Programmatic Advertising · Contextual Targeting · CTV · MarTech · Advertising · Custom Categories · DSP
 
-Everything in this repo about that API surface is derived from Peer39's own publicly readable MCP server source (`@peer39/mcp-server`, pre-release) plus live probes of the API host. Nothing was obtained with credentials.
+## Peer39 on APIs.io
 
-Backed by: canaan-partners
+Everything profiled for Peer39 is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/peer39/](https://apis.io/providers/peer39/)** — or go straight to one of the APIs or properties below.
+
+### APIs (1)
+
+- [Peer39 External API](https://apis.io/apis/peer39/peer39-external-api/) — The Peer39 External API manages Custom Categories — contextual targeting and brand-safety lists of keywords, URLs, mobile apps or CTV apps — and syncs them…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Peer39 Custom Category MCP Server](https://apis.io/servers/peer39/peer39-custom-category-mcp-server/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Peer39 Authentication](https://apis.io/security/peer39/peer39-authentication/)
+- [Peer39 Domain Security](https://apis.io/security/peer39/peer39-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Peer39 Plans Pricing](https://apis.io/plans/peer39/peer39-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Peer39 Rate Limits](https://apis.io/rate-limits/peer39/peer39-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.peer39.com)
+- [Getting started](https://www.peer39.com/onboarding-guide)
+- [Sign up](https://www.peer39.com/signup/)
+- [Support](https://www.peer39.com/contact-us)
+- [Blog](https://www.peer39.com/blog)
+- [Terms of service](https://www.peer39.com/service-terms)
+- [Privacy policy](https://www.peer39.com/privacy-policy/)
+
+## API Evangelist rating
+
+**Kin Score 22.3** — emerging · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 0.0 |
+| Contract governance | 4.5 |
+| Operational transparency | 0.0 |
+| Developer ergonomics | 31.0 |
+| Access clarity | 34.2 |
+
+**Agent readiness 5.8** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 24.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/peer39/](https://apis.io/providers/peer39/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Peer39: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/peer39/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
